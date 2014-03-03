@@ -54,7 +54,7 @@
                 /* if we need to attach/export functions to global scope, do so like this */
                 global.a_global_function = function (x) {
                     do_something_with(x);
-                }
+                };
                 
                 return true;
             }
