@@ -8,17 +8,21 @@
     Alternatives like zepto or lo-dash can be passsed as arguments to the IIFE
         
 */
-(function (UTIL, $, _, global, undefined) { 'use strict';
+(function (global, $, _, undefined) { 'use strict';
 
     var m = {}; // modules
 
-    var environmentSetup = function () {
+    var setupEnvironment = function () {
         m.Environment.initialize();
     };
 
     var registerListeners = function () {
         m.UI.listeners();
         m.TheModel.listeners();
+    };
+    
+    var registerGlobals = function () {
+        m.Environment.globals();  
     };
     
     var registerTips = function () {
@@ -48,6 +52,42 @@
             setup : function () { 
                 UTIL.setlogging(false);
                 m.Environment.doSomething();
+            },
+            
+            globals : function () {
+                global.func_published_as_global = function (a) {
+                    var b = do_something_with_a(a);
+                    return b;
+                };
+                
+                global.another_func = function (a) {
+                    return ~~a;
+                };
+                
+                global.UTIL = (function () {
+                    
+                    var _state = {
+                        logging : false;
+                    };
+                    
+                    var f = {
+                        
+                        setlogging = function (on_off) {
+                            _state.logging = !!on_off;
+                        },
+                        
+                        registerTip = function (arg1, arg2) {
+                            // set tipsy tip with 
+                            //      arg1[0] as selector
+                            //      arg1[1] as text
+                            //      arg2 as config object
+                        }                 
+                        
+                    };
+                    
+                    return f;
+                    
+                }());
             },
 
             doSomething : function (el) {
@@ -115,14 +155,14 @@
 
     }; // m
 
-    $(document).ready(environmentSetup);
-    $(document).ready(registerListeners);
-    $(document).ready(last);
+    setupEnvironment();
+    registerGlobals();
+    registerListeners();
+    last();
 
 }(
-    UTIL || {}, 
-    jQuery || $ || {}, 
-    _ || {}, 
-    window
+    window,
+    jQuery || $, 
+    _ 
     /* undefined */
 ));
