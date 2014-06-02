@@ -34,8 +34,8 @@
         UTIL.registerTip(['.another-selector','Other tiptext']);
     };
 
-    var last = function () {
-        m.UI.last();
+    var late = function () {
+        m.UI.late();
         // other "late" things go here
     };
 
@@ -54,7 +54,7 @@
                 m.Environment.doSomething();
             },
             
-            globals : function () {
+            globals : function () { // export globals, optionally grouped by categories like "Environment"
                 global.func_published_as_global = function (a) {
                     var b = do_something_with_a(a);
                     return b;
@@ -91,7 +91,7 @@
             },
 
             doSomething : function (el) {
-                /* if we need to attach/export functions to global scope, do so like this */
+                /* can attach functions to global scope using this pattern as well */
                 global.a_global_function = function (x) {
                     do_something_with(x);
                 };
@@ -112,7 +112,7 @@
                 /* things to do early, before nearly everything else has run */
             },
 
-            last : function () {
+            late : function () {
                 /* things to do, trigger, or bind late, after nearly everything else has run */
                 registerTips();
                 UTIL.activateTips();   
@@ -155,10 +155,14 @@
 
     }; // m
 
-    setupEnvironment();
-    registerGlobals();
-    registerListeners();
-    last();
+    $(function () { // wait for domready
+        
+        setupEnvironment();
+        registerGlobals();
+        registerListeners();
+        late();
+        
+    });
 
 }(
     window,
