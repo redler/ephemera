@@ -2,7 +2,7 @@
 
     We currently always use 
         - jQuery (or equivalent)
-        - underscore (or equivalent),
+        - lodash (or underscore.js, or equivalent),
         - UTIL (wrapper around some useful utility methods, tooltips, logging, etc)
         
     Alternatives like zepto or lo-dash can be passsed as arguments to the IIFE
