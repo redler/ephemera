@@ -72,11 +72,11 @@
                     
                     var f = {
                         
-                        setlogging = function (on_off) {
+                        setlogging : function (on_off) {
                             _state.logging = !!on_off;
                         },
                         
-                        registerTip = function (arg1, arg2) {
+                        registerTip : function (arg1, arg2) {
                             // set tipsy tip with 
                             //      arg1[0] as selector
                             //      arg1[1] as text
