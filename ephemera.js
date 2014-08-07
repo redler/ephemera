@@ -3,11 +3,13 @@
     We currently always use 
         - jQuery (or equivalent)
         - lodash (or underscore.js, or equivalent),
-        - UTIL (wrapper around some useful utility methods, tooltips, logging, etc)
+        - global.UTIL (wrapper around some useful utility methods, tooltips, logging, etc)
         
     Alternatives like zepto or lo-dash can be passsed as arguments to the IIFE
         
 */
+/*jshint devel:true, laxbreak:true, unused:false, bitwise:false */
+/*global _, UTIL */
 (function (global, $, _, undefined) { 'use strict';
 
     var m = {}; // modules
@@ -16,13 +18,13 @@
         m.Environment.initialize();
     };
 
+    var registerGlobals = function () {
+        m.Environment.globals();  
+    };
+    
     var registerListeners = function () {
         m.UI.listeners();
         m.TheModel.listeners();
-    };
-    
-    var registerGlobals = function () {
-        m.Environment.globals();  
     };
     
     var registerTips = function () {
@@ -30,6 +32,7 @@
            over the tooltip system for a page -- in this case, tipsy.
            Register the tips we need, and the framework activates the tip system below
         */
+        var UTIL = global.UTIL;
         UTIL.registerTip(['.classname','Tiptext'], {gravity: 'w', fade: false, opacity: 1 });
         UTIL.registerTip(['.another-selector','Other tiptext']);
     };
@@ -37,6 +40,10 @@
     var late = function () {
         m.UI.late();
         // other "late" things go here
+    };
+    
+    var afterDomReady = function () {
+        thing_to_run_on_DOMReady();
     };
 
     m = {
@@ -64,7 +71,7 @@
                     return ~~a;
                 };
                 
-                global.UTIL = (function () {
+                global.UTIL = typeof global.UTIL !== 'undefined' ? (function () {
                     
                     var _state = {
                         logging : false;
@@ -76,18 +83,18 @@
                             _state.logging = !!on_off;
                         },
                         
-                        registerTip : function (arg1, arg2) {
+                        registerTip : function (/* arguments */) {
                             // set tipsy tip with 
-                            //      arg1[0] as selector
-                            //      arg1[1] as text
-                            //      arg2 as config object
+                            //      arguments[0] as selector
+                            //      arguments[1] as text
+                            //      arguments[2] as config object
                         }                 
                         
                     };
                     
                     return f;
                     
-                }());
+                }()) : global.UTIL;
             },
 
             doSomething : function (el) {
@@ -155,13 +162,13 @@
 
     }; // m
 
-    $(function () { // wait for domready
-        
-        setupEnvironment();
-        registerGlobals();
-        registerListeners();
-        late();
-        
+
+    setupEnvironment();
+    registerGlobals();
+    registerListeners();
+    late();
+    $(function () {
+        afterDomReady();
     });
 
 }(
