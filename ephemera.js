@@ -95,7 +95,7 @@
                         
                         getlogging : function () {
                             return !!_state.logging;
-                        }
+                        },
                         
                         registerTip : function (/* arguments */) {
                             // set tipsy or bootstrap tooltip with arguments
