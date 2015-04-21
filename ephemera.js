@@ -45,6 +45,15 @@
     var afterDomReady = function () {
         thing_to_run_on_DOMReady();
     };
+    
+    var exportGlobal = function (thingName, thing, force) {
+        var overwrite = !!force,
+            exists = typeof global[thingName] !== 'undefined';
+        if (exists && !overwrite) {
+            throw new Error('Cannot export [' + thingName + '] to global scope because it already exists. Use force option to override.');
+        }
+        global[thingName] = thing;
+    };    
 
     m = {
 
@@ -62,16 +71,17 @@
             },
             
             globals : function () { // export globals, optionally grouped by categories like "Environment"
-                global.func_published_as_global = function (a) {
+                
+                exportGlobal('func_published_as_global', function (a) {
                     var b = do_something_with_a(a);
                     return b;
-                };
+                });
                 
-                global.another_func = function (a) {
+                exportGlobal('another_func', function (a) {
                     return ~~a;
-                };
+                });
                 
-                global.UTIL = typeof global.UTIL !== 'undefined' ? (function () {
+                exportGlobal('UTIL', (function () {
                     
                     var _state = {
                         logging : false;
@@ -83,8 +93,13 @@
                             _state.logging = !!on_off;
                         },
                         
+                        getlogging : function () {
+                            return !!_state.logging;
+                        }
+                        
                         registerTip : function (/* arguments */) {
-                            // set tipsy tip with 
+                            // set tipsy or bootstrap tooltip with arguments
+                            //   e.g. (tipsy):
                             //      arguments[0] as selector
                             //      arguments[1] as text
                             //      arguments[2] as config object
@@ -94,14 +109,18 @@
                     
                     return f;
                     
-                }()) : global.UTIL;
+                }()));
+            },
+            
+            do_something_with : function (d) {
+                return d;
             },
 
             doSomething : function (el) {
                 /* can attach functions to global scope using this pattern as well */
-                global.a_global_function = function (x) {
+                exportGlobal('a_global_function', function (x) {
                     do_something_with(x);
-                };
+                });
                 
                 return true;
             }
